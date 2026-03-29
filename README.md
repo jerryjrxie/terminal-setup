@@ -1,75 +1,56 @@
-# Dotfiles Template
+# Terminal Setup
 
-A minimal dotfiles template for use with [OpenBoot](https://openboot.dev).
+> Sensible terminal configuration for macOS
 
-## Structure
+One-command setup for a better terminal experience.
 
-```
-dotfiles/
-├── git/
-│   └── .gitconfig      # Git configuration
-├── ssh/
-│   └── .ssh/
-│       └── config      # SSH configuration
-├── zsh/
-│   └── .zshrc          # Zsh configuration
-└── README.md
-```
-
-## Usage
-
-### With OpenBoot
-
-1. Fork this repository
-2. Customize the config files
-3. Create an OpenBoot config at [openboot.dev/dashboard](https://openboot.dev/dashboard)
-4. Set your dotfiles repo URL in the config
-5. Run: `curl -fsSL https://openboot.dev/your-username | bash`
-
-### Manual Setup
+## Install
 
 ```bash
-# Clone to ~/.dotfiles
-git clone https://github.com/YOUR_USERNAME/dotfiles ~/.dotfiles
-cd ~/.dotfiles
-
-# Deploy with GNU Stow
-stow -v --target="$HOME" git ssh zsh
+curl -fsSL https://raw.githubusercontent.com/jerryjrxie/terminal-setup/main/install.sh | bash
 ```
 
-## How It Works
+## What You Get
 
-This template uses [GNU Stow](https://www.gnu.org/software/stow/) for symlink management:
+- **zsh-autosuggestions** — Command suggestions as you type
+- **zsh-syntax-highlighting** — Real-time syntax validation
+- **fzf** — Fuzzy finder (`Ctrl+T`, `Ctrl+R`)
+- **starship** — Clean, fast prompt
+- **eza** — Better `ls` with icons
+- **bat** — Syntax-highlighted `cat`
+- **ripgrep** — Fast `grep`
+- **fd** — Fast `find`
 
-- Each top-level directory (git, ssh, zsh) is a "package"
-- Files inside are symlinked relative to `$HOME`
-- `git/.gitconfig` → `~/.gitconfig`
-- `ssh/.ssh/config` → `~/.ssh/config`
-- `zsh/.zshrc` → `~/.zshrc`
+## Key Bindings
+
+- `Ctrl+T` — Find files
+- `Ctrl+R` — Search history
+- Type to see suggestions
+
+## Aliases
+
+```bash
+ls → eza      # Better ls with icons
+cat → bat     # Syntax highlighted
+grep → rg     # Fast grep
+find → fd     # Fast find
+g → git       # Git shortcut
+.. → cd ..    # Parent directory
+```
 
 ## Customization
 
-### Adding New Configs
-
-To add a new config (e.g., tmux):
+Add your own settings to `~/.zshrc.local`:
 
 ```bash
-mkdir -p tmux
-touch tmux/.tmux.conf
-# Edit tmux/.tmux.conf with your config
-stow -v --target="$HOME" tmux
+export API_KEY="secret"
+alias vpn="open /Applications/VPN.app"
 ```
 
-### Nested Directories
+## Requirements
 
-For configs in subdirectories (like `~/.config/nvim`):
-
-```bash
-mkdir -p nvim/.config/nvim
-touch nvim/.config/nvim/init.lua
-stow -v --target="$HOME" nvim
-# Creates: ~/.config/nvim/init.lua
-```
+- macOS
+- Homebrew (installed automatically if missing)
 
 ## License
 

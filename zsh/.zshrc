@@ -1,58 +1,56 @@
-# =============================================================================
-# Zsh Configuration
-# =============================================================================
+# Sensible zsh configuration
 
-# Path to Oh My Zsh installation (if using)
+# Oh My Zsh
 export ZSH="$HOME/.oh-my-zsh"
-
-# Theme (if using Oh My Zsh)
 ZSH_THEME="robbyrussell"
+plugins=(git)
+source $ZSH/oh-my-zsh.sh
 
-# Plugins (if using Oh My Zsh)
-plugins=(
-    git
-    docker
-    kubectl
-    # zsh-autosuggestions
-    # zsh-syntax-highlighting
-)
-
-# Load Oh My Zsh (if installed)
-[[ -f $ZSH/oh-my-zsh.sh ]] && source $ZSH/oh-my-zsh.sh
-
-# =============================================================================
-# Environment Variables
-# =============================================================================
-
-export EDITOR="vim"
-export VISUAL="$EDITOR"
+# Basics
+export EDITOR="vi"
 export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
 
-# Homebrew (Apple Silicon)
+# Homebrew
 if [[ -f "/opt/homebrew/bin/brew" ]]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
-
-# Homebrew (Intel)
-if [[ -f "/usr/local/bin/brew" ]]; then
+elif [[ -f "/usr/local/bin/brew" ]]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
 
-# =============================================================================
-# Aliases
-# =============================================================================
+# Path
+export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
-# Navigation
-alias ..="cd .."
-alias ...="cd ../.."
-alias ~="cd ~"
+# fzf
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+if [ -f "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh" ]; then
+    source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+fi
 
-# List files
-alias ls="ls --color=auto"
-alias ll="ls -alF"
-alias la="ls -A"
-alias l="ls -CF"
+# Plugins
+if [ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+    source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+fi
+if [ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+    source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
+
+# Prompt
+eval "$(starship init zsh)"
+
+# Better tools
+if command -v eza &>/dev/null; then
+    alias ls='eza --icons=auto'
+    alias ll='eza -la --icons=auto'
+fi
+if command -v bat &>/dev/null; then
+    alias cat='bat --paging=never'
+fi
+if command -v rg &>/dev/null; then
+    alias grep='rg'
+fi
+if command -v fd &>/dev/null; then
+    alias find='fd'
+fi
 
 # Safety
 alias rm="rm -i"
@@ -63,84 +61,32 @@ alias mv="mv -i"
 alias g="git"
 alias gs="git status -sb"
 alias ga="git add"
+alias gaa="git add -A"
 alias gc="git commit"
+alias gcm="git commit -m"
 alias gp="git push"
 alias gl="git pull"
 alias gd="git diff"
 alias gco="git checkout"
-alias gb="git branch"
 alias glog="git log --oneline --graph --decorate -20"
 
-# Docker shortcuts
-alias d="docker"
-alias dc="docker compose"
-alias dps="docker ps"
-alias di="docker images"
+# Navigation
+alias ..="cd .."
+alias ...="cd ../.."
 
-# Kubernetes shortcuts
-alias k="kubectl"
-alias kgp="kubectl get pods"
-alias kgs="kubectl get services"
-alias kgd="kubectl get deployments"
-
-# Quick edit
+# Utilities
 alias zshrc="$EDITOR ~/.zshrc"
 alias reload="source ~/.zshrc"
 
-# =============================================================================
-# Functions
-# =============================================================================
-
-# Create directory and cd into it
+# Create dir and cd
 mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-# Extract various archive formats
-extract() {
-    if [[ -f "$1" ]]; then
-        case "$1" in
-            *.tar.bz2) tar xjf "$1" ;;
-            *.tar.gz)  tar xzf "$1" ;;
-            *.tar.xz)  tar xJf "$1" ;;
-            *.bz2)     bunzip2 "$1" ;;
-            *.gz)      gunzip "$1" ;;
-            *.tar)     tar xf "$1" ;;
-            *.tbz2)    tar xjf "$1" ;;
-            *.tgz)     tar xzf "$1" ;;
-            *.zip)     unzip "$1" ;;
-            *.Z)       uncompress "$1" ;;
-            *.7z)      7z x "$1" ;;
-            *)         echo "'$1' cannot be extracted" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
+# Fuzzy git checkout
+fbr() {
+    git branch -vv | fzf +m | awk '{print $1}' | sed "s/.* //" | xargs git checkout
 }
 
-# =============================================================================
-# Path
-# =============================================================================
-
-# Add custom paths
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
-
-# Node.js (if using nvm)
-export NVM_DIR="$HOME/.nvm"
-[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
-[[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-
-# Go
-export GOPATH="$HOME/go"
-export PATH="$GOPATH/bin:$PATH"
-
-# Rust
-[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
-
-# =============================================================================
-# Local Configuration
-# =============================================================================
-
-# Load local config if exists (for machine-specific settings)
+# Load local config
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
