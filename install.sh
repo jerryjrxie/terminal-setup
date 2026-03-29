@@ -23,7 +23,7 @@ fi
 
 # Install sensible packages
 echo "Installing packages..."
-brew install zsh-autosuggestions zsh-syntax-highlighting fzf starship eza bat ripgrep fd 2>/dev/null || true
+brew install zsh-autosuggestions zsh-syntax-highlighting fzf starship eza bat ripgrep fd zoxide atuin 2>/dev/null || true
 
 # Setup fzf
 echo "Configuring fzf..."
