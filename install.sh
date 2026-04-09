@@ -29,15 +29,17 @@ brew install zsh-autosuggestions zsh-syntax-highlighting fzf starship eza bat ri
 echo "Configuring fzf..."
 $(brew --prefix)/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish 2>/dev/null || true
 
-# Backup and install zshrc
-if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
-    mv "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d)"
-fi
-ln -sf "$INSTALL_DIR/zsh/.zshrc" "$HOME/.zshrc"
-
-# Install Oh My Zsh if not present
+# Install Oh My Zsh first so any .zshrc it creates gets caught by the backup below
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
 fi
+
+# Backup any plain-file .zshrc (including one oh-my-zsh may have just written)
+if [ -f "$HOME/.zshrc" ] && [ ! -L "$HOME/.zshrc" ]; then
+    mv "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d)"
+fi
+
+# Symlink our config — always last, always wins
+ln -sf "$INSTALL_DIR/zsh/.zshrc" "$HOME/.zshrc"
 
 echo "Done! Restart your terminal or run: source ~/.zshrc"
