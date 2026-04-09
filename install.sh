@@ -3,7 +3,8 @@
 
 set -e
 
-REPO_URL="https://github.com/jerryjrxie/terminal-setup"
+REPO_HTTPS="https://github.com/jerryjrxie/terminal-setup"
+REPO_SSH="git@github.com:jerryjrxie/terminal-setup.git"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.config/terminal-setup}"
 
 echo "Setting up terminal..."
@@ -14,12 +15,16 @@ if ! command -v brew &> /dev/null; then
     eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv 2>/dev/null)"
 fi
 
-# Clone or update repo
+# Clone via HTTPS (no auth needed for public repo) or pull if already present
 if [ -d "$INSTALL_DIR" ]; then
     cd "$INSTALL_DIR" && git pull
 else
-    git clone "$REPO_URL" "$INSTALL_DIR"
+    git clone "$REPO_HTTPS" "$INSTALL_DIR"
+    cd "$INSTALL_DIR"
 fi
+
+# Switch remote to SSH so future pulls/pushes use key auth
+git remote set-url origin "$REPO_SSH"
 
 # Install sensible packages
 echo "Installing packages..."
