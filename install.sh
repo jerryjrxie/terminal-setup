@@ -47,4 +47,8 @@ fi
 # Symlink our config — always last, always wins
 ln -sf "$INSTALL_DIR/zsh/.zshrc" "$HOME/.zshrc"
 
+# Install Bun (adds lines to .zshrc for PATH setup)
+echo "Installing Bun..."
+curl -fsSL https://bun.sh/install | bash
+
 echo "Done! Restart your terminal or run: source ~/.zshrc"
