@@ -48,6 +48,10 @@ fi
 # Symlink our config — always last, always wins (overwrites any existing file)
 ln -sf "$INSTALL_DIR/zsh/.zshrc" "$HOME/.zshrc"
 
+# Set git identity only if not already configured (so per-machine overrides survive reruns)
+git config --global user.name &>/dev/null || git config --global user.name "Jerry Xie"
+git config --global user.email &>/dev/null || git config --global user.email "jerryjrxie@gmail.com"
+
 # Switch remote to SSH only after everything else succeeded, so a fresh run
 # without SSH keys can't leave the repo unable to pull on the next run.
 git remote set-url origin "$REPO_SSH" 2>/dev/null || true
