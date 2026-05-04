@@ -20,6 +20,18 @@ fi
 # Path
 export PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 
+# Bun
+if [ -d "$HOME/.bun" ]; then
+    export BUN_INSTALL="$HOME/.bun"
+    export PATH="$BUN_INSTALL/bin:$PATH"
+    [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+fi
+
+# mise
+if command -v mise &>/dev/null; then
+    eval "$(mise activate zsh)"
+fi
+
 # fzf
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 if [ -f "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh" ]; then
